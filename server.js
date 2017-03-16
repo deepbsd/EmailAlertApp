@@ -7,19 +7,8 @@ const morgan = require('morgan');
 // are automatically loaded.
 require('dotenv').config();
 
-// not sure if I need to import nodemail or just sendEmail function...
-const sendEmail = require('sendEmail');
-
-/*
-// here's the email payload
-const emailData = {
-  from: ALERT_FROM_EMAIL,
-  to: ALERT_TO_EMAIL,
-  subject: `ALERT: a ${err} Error Occurred!`,
-  text: `The error message is: ${err.message}.  The stack is: ${err.stack}`,
-  html: `<p>The error message is ${err.message}. The error stack is ${err.stack}</p>`
-}
-*/
+// apparently the emailer.js takes care of just about everything?
+const sendEmail = require('./emailer');
 
 
 const {logger} = require('./utilities/logger');
@@ -46,9 +35,21 @@ app.get('*', russianRoulette);
 // `app.use()`. It needs to come BEFORE the `app.use` call
 // below, which sends a 500 and error message to the client
 app.use(function (err,req,res,next) {
+  // here's the payload
+  const emailData = {
+  from: process.env.ALERT_FROM_EMAIL,
+  to: process.env.ALERT_TO_EMAIL,
+  subject: `ALERT: a ${err} Occurred!`,
+  text: `The error message is: ${err.message}.  The stack is: ${err.stack}`,
+  html: `<p>The error message is ${err.message}. The error stack is ${err.stack}</p>`
+}
+  // check which error it is and construct the error message, route Foo and Bar errors
   if ((err == 'FooError') || (err == 'BarError')) {
-    var message = `A ${err} Error Occurred!`;
-    
+    sendEmail(emailData);    
+  } else {
+    res.send(`<h1>You made it here okay!</h1><p>BTW, the error was a ${err}</p>`);
+    console.log(emailData);
+    next();
   }
 });
 
