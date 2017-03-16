@@ -49,7 +49,7 @@ app.use(function (err,req,res,next) {
     sendEmail(emailData);    
   } else {
     res.send(`<h1>You made it here okay!</h1><p>BTW, the error was a ${err}</p>`);
-    console.log(emailData);
+    //console.log(emailData);  // Just for checking the email contents that *would* have gotten sent
     next();
   }
 });
