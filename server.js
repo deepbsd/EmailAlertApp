@@ -8,7 +8,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 // apparently the emailer.js takes care of just about everything?
-const sendEmail = require('./emailer');
+const {sendEmail} = require('./emailer');
 
 
 const {logger} = require('./utilities/logger');
@@ -44,7 +44,8 @@ app.use(function (err,req,res,next) {
   html: `<p>The error message is ${err.message}. The error stack is ${err.stack}</p>`
 }
   // check which error it is and construct the error message, route Foo and Bar errors
-  if ((err == 'FooError') || (err == 'BarError')) {
+  if (err instanceof FooError || err instanceof BarError) {
+    logger.info(`Trying to send email alert to ${process.env.ALERT_TO_EMAIL}`)
     sendEmail(emailData);    
   } else {
     res.send(`<h1>You made it here okay!</h1><p>BTW, the error was a ${err}</p>`);
