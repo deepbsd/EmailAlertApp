@@ -15,3 +15,9 @@ SMTP_URL='smtps://account-name@gmail.com:password@smtp.gmail.com'
 DO NOT hard code these into your source code. They should be set as environment
 variables on your server, and your application code should access them via
 `process.env.myVar`.
+
+=======
+
+# EmailAlertApp - forked for class project from email alert middleware challenge
+
+Thinkful Express Project to experiment with Error Middleware
